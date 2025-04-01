@@ -1,0 +1,20 @@
+steps:
+  # 构建 Docker 镜像
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/cohesive-ridge-455513-f5/telegram-bot', '.']
+  # 推送镜像到 Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/cohesive-ridge-455513-f5/telegram-bot']
+  # 部署到 Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'telegram-bot'
+      - '--image=gcr.io/cohesive-ridge-455513-f5/telegram-bot'
+      - '--platform=managed'
+      - '--region=asia-southeast1'
+      - '--set-env-vars=PORT=3000,BOT_TOKEN=7532071282:AAE9rACtusPBBCT6gehK5Q3eP2R5yq47pOM,SHEET_ID=1Ce3biklPaglpFs1fBkeOPkCDFRocbpFHKcp0MCPf6sw,SHEET_NAME=话术平台表,CLOUD_RUN_SERVICE_URL=telegram-bot-1082834947408.asia-southeast1.run.app'
+      - '--timeout=600s'
+images:
+  - 'gcr.io/cohesive-ridge-455513-f5/telegram-bot'
